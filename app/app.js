@@ -1,7 +1,4 @@
-/**
- * Created by mezin on 27.01.17.
- */
-
+'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -14,7 +11,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
-// const token = require('./utils/rehydrate')();
 
 import {Router,Route, browserHistory} from 'react-router';
 
@@ -38,13 +34,4 @@ if (module.hot) {
         render();
     });
 }
-
-
-
-
-
-///////////////////////////
-
-// var cache = require('./utils/cache');
-// var ComponentData = cache.get(token, 'ComponentData');
 

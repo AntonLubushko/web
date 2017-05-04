@@ -1,12 +1,9 @@
 /**
- * in module use
- * import Parse from '/home/work/test-task/web/app/utils/parse-server/init';
+ * to use Parse include this file
+ * import Parse from './utils/parseServerInit';
  */
 
-
-
 import Parse from 'parse';
-import {isClient} from '../helpers';
 
 const PARSE_APP_ID = process.env.PARSE_APP_ID || 'TestTaskApplTcVXkSPuZpMsSKccGIN0TLlq0hcq';
 
