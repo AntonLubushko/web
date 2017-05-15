@@ -6,10 +6,10 @@ const styles = {
 
 export default class NotFound extends Component {
     render() {
-        console.log('Hello world');
+        console.log('Hello wo');
         return (
             <h1 style={styles.indexPage} >
-                Hello Worldgh !!!!
+                Hello Worldghtgjghj !!!!
             </h1>
         );
     }

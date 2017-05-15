@@ -1,7 +1,7 @@
 // Route localhost/users
 
 import React, {Component} from 'react';
-
+import User from './User.jsx';
 const styles = {
     indexPage: {textAlign: 'center'},
 };
@@ -20,7 +20,7 @@ export default class UsersList extends Component {
 constructor(props){
 	super(props);
 	this.state = {
-		array: [],
+		array: []
 	}
 }
 
@@ -28,7 +28,9 @@ componentDidMount(){
 	return query.find()
 	.then(resolve => {
 		let array = resolve;
-		this.setState({array});});
+		this.setState({array});
+		
+	});
 }
 
 render() {
@@ -37,16 +39,15 @@ for(let i = 0; i < this.state.array.length;  i++){
 	let name =  this.state.array[i]? this.state.array[i].get("name") : '';
 	let email =  this.state.array[i]? this.state.array[i].get("email") : '';
 	let town =  this.state.array[i]? this.state.array[i].get("Town").get("name") : '';
-	colsole.log(name);
 	all.push([name, email, town]);
 }
-console.log("dfdsfdsf");
 
-// this return must be finished
 return (
 		<div>
-		<p>SDFDSF</p>
-		
+		{all.map((user,i) => <User  key={i}
+									name={user[0]} 
+									email={user[1]} 
+									town={user[2]}/>)}
 		</div>
 	);
 
