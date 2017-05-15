@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
-
+import {
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 export default class User extends Component {
     render() {
-       
         return (
-            <ul>
-				<li>Name {this.props.name}</li>
-				<li>Email {this.props.email}</li>
-				<li>Town {this.props.town}</li>
-			</ul>
-        );
+        <TableRow>
+        <TableRowColumn>{this.props.name}</TableRowColumn>
+        <TableRowColumn>{this.props.email}</TableRowColumn>
+        <TableRowColumn>{this.props.town}</TableRowColumn>
+        </TableRow>
+	  );
     }
 };
