@@ -49,9 +49,7 @@ updateUser(action, user){
 deleteUser(action, user){
 	console.log(action, user);
 }
-addUser(action){
-	console.log(action);
-}
+
 render() {
 let all = this.state.array.map(user => {
 	let id =  user? user.id : '';
@@ -62,14 +60,13 @@ let all = this.state.array.map(user => {
 });
 
 return (
-		<div>
+		<div style={{minWidth:1000}}>
 			<Link to={'/users/add'}>
 			<RaisedButton label="Add new user" 
 										primary={true} 
-										style={style} 
-										onTouchTap={this.addUser.bind(this,'add')}/>
+										style={style}/>
 			</Link>
-			<Table height={'200px'} selectable={false}>
+			<Table height={'600px'} selectable={false}>
 			<TableHeader displaySelectAll={false} 
 									 adjustForCheckbox={false}
             			 enableSelectAll={false}
