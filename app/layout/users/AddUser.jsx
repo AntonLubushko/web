@@ -23,6 +23,7 @@ export default class AddUser extends Component {
     super(props);
     this.state = {
         openBar:false,
+        errorBar:false,
         value: 1,
         name:'',
         email:'',
@@ -43,26 +44,33 @@ export default class AddUser extends Component {
      });
     }
     
-    save(){
+    saveUser(){
       users = new Users();
-      console.log('name ',this.state.name);
-      console.log('email ',this.state.email);
-      console.log('town ',this.state.towns[this.state.value-1].id||'');
-      users.set("name",this.state.name);
-      users.set("email",this.state.email);
+      let name = this.state.name;
+      let email = this.state.email;
+      let town = this.state.towns[this.state.value-1].id||'';
       let townId = Towns.createWithoutData(this.state.towns[this.state.value-1].id);
-      console.log(townId);
-      users.set("Town",townId);
-      users.save()
-      .then(resolve => {
-        console.log('new user was saved');
-        this.setState({openBar: true});})
-      .catch(err => console.log('ERROR ',err));
+      if(name && name !== '' && email && email !== ''){
+        users.set("name",this.state.name);
+        users.set("email",this.state.email);
+        users.set("Town",townId);
+        users.save()
+        .then(resolve => {
+          console.log('new user was saved');
+          this.setState({openBar: true});})
+        .catch(err => console.log('ERROR ',err));
+    }else{
+      this.setState({errorBar: true});
+    }
        
     }
 
-    closeSnackBar(){
+    closeSuccessSavedBar(){
       this.setState({openBar:false});
+    }
+
+    closeErrorBar(){
+      this.setState({errorBar:false});
     }
 
     componentDidMount(){
@@ -73,6 +81,7 @@ export default class AddUser extends Component {
     render() {
         return (
             <div>
+            
             <Link to={'/users'}>
 			<RaisedButton label="back to userlist" 
 										primary={true}/>
@@ -101,13 +110,19 @@ export default class AddUser extends Component {
     <RaisedButton label="Add" 
                   primary={true} 
                   style={{align:'right'}}
-                  onTouchTap={this.save.bind(this)}/>
+                  onTouchTap={this.saveUser.bind(this)}/>
    <Snackbar
           open={this.state.openBar}
           message="User was saved to database"
           autoHideDuration={2500}
-          onRequestClose={this.closeSnackBar.bind(this)}
+          onRequestClose={this.closeSuccessSavedBar.bind(this)}
         />
+  <Snackbar
+    open={this.state.errorBar}
+    message="Not all fields are fullfilled"
+    autoHideDuration={2500}
+    onRequestClose={this.closeErrorBar.bind(this)}
+  />
   </div>
   </div>
         );

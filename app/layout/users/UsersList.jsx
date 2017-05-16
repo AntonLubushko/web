@@ -12,6 +12,8 @@ import {
 } from 'material-ui/Table';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Link} from 'react-router';
+import Pagination from 'material-ui-pagination';
+import Divider from 'material-ui/Divider';
 const style = {
   margin: 2,
 };
@@ -24,23 +26,48 @@ Parse.serverURL = 'http://localhost/parse';
 // Fetching all users with all fields and print to console
 let Users = Parse.Object.extend("Users");
 let query = new Parse.Query(Users).include(['Town']);
-
+const SHOWN_USERS = 10;
 export default class UsersList extends Component {
 
 constructor(props){
 	super(props);
 	this.state = {
-		array: []
+		array: [],
+    usersToDisplay:[],
+    totalPages:1,
+    currentPage:1
 	}
 }
+
 
 componentDidMount(){
 	return query.find()
 	.then(resolve => {
 		let array = resolve;
-		this.setState({array});
-		
-	});
+		this.setState({array:array, totalPages:Math.ceil(array.length/10)});
+    
+  })
+  .then( () => this.setState({usersToDisplay:calculate(this.currentPage)}));
+}
+
+calculate(value){
+  let usersToDisplay = [];
+  let array = this.state.array;
+  let amount = Math.min(value*SHOWN_USERS,array.length);
+  for(let i = (value-1)*SHOWN_USERS; i < amount; i++){
+    let id =  array[i]? array[i].id : '';
+    let name =  array[i]? array[i].get("name") : '';
+    let email =  array[i]? array[i].get("email") : '';
+    let town =  array[i]? array[i].get("Town").get("name") : '';
+    usersToDisplay.push([id, name, email, town]);
+  }
+  return usersToDisplay;
+}
+
+changeShownUsers = (value )=> {
+  console.log(value);
+  let usersToDisplay = this.calculate(value);
+  this.setState({usersToDisplay:usersToDisplay,currentPage:value});
 }
 
 updateUser(action, user){
@@ -51,14 +78,8 @@ deleteUser(action, user){
 }
 
 render() {
-let all = this.state.array.map(user => {
-	let id =  user? user.id : '';
-	let name =  user? user.get("name") : '';
-	let email =  user? user.get("email") : '';
-	let town =  user? user.get("Town").get("name") : '';
-	return [id, name, email, town];
-});
-
+  console.log(this.state.usersToDisplay);
+let all = this.state.usersToDisplay;
 return (
 		<div style={{minWidth:1000}}>
 			<Link to={'/users/add'}>
@@ -66,7 +87,7 @@ return (
 										primary={true} 
 										style={style}/>
 			</Link>
-			<Table height={'600px'} selectable={false}>
+			<Table  selectable={false}>
 			<TableHeader displaySelectAll={false} 
 									 adjustForCheckbox={false}
             			 enableSelectAll={false}
@@ -91,6 +112,8 @@ return (
 			)}
 			</TableBody>
 			</Table>
+      <Divider/>
+			<Pagination total={this.state.totalPages} display={SHOWN_USERS} current={this.state.currentPage} onChange={this.changeShownUsers}/>
 		</div>
 	);
 
