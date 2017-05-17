@@ -50,6 +50,7 @@ componentDidMount(){
   .then( () => this.setState({usersToDisplay:calculate(this.currentPage)}));
 }
 
+// need to fix display first 10 users before any pagination clicked
 calculate(value){
   let usersToDisplay = [];
   let array = this.state.array;
