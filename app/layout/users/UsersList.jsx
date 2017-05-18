@@ -18,10 +18,10 @@ const style = {
   margin: 2,
 };
 
-import {showUsersList, countUsers} from '../../utils/actions';
+import {getUsersList, getUsersAmount, deleteUser} from '../../utils/actions';
 
 
-const SHOWN_USERS = 10;
+const MAX_USERS_ON_PAGE = 10;
 
 
 export default class UsersList extends Component {
@@ -34,27 +34,37 @@ export default class UsersList extends Component {
 			currentPage:1
 		}
 	}
-	fetchData(){
-		countUsers().then(amount =>  this.setState({totalPages:Math.ceil(amount/10)}));
-		showUsersList(0, SHOWN_USERS).then(users => {
-			this.setState({usersToDisplay: users});
+	fetchData(skip, currentPage){
+		getUsersAmount().then(amount => this.setState({totalPages:Math.ceil(amount/MAX_USERS_ON_PAGE)}));
+		getUsersList(skip, MAX_USERS_ON_PAGE).then(users => {
+			this.setState({usersToDisplay: users,currentPage: currentPage});
 		});
 	}
 
 	componentDidMount(){
-		this.fetchData();
+		this.fetchData(0,1);
 	}
 
 	updateUser(action, user){
 		console.log(action, user);
 	}
-	deleteUser(action, user){
-		console.log(action, user);
-		this.fetchData();
+	
+  delete(action, user){
+		deleteUser(user)
+    .then(resolve => {
+      if(this.state.usersToDisplay.length === 1) {
+        let currentPage = this.state.currentPage;
+        currentPage = currentPage <= 1? 1 : currentPage-1;
+        this.fetchData((currentPage-1)*MAX_USERS_ON_PAGE, currentPage);
+      } else {
+        this.fetchData((this.state.currentPage - 1)*MAX_USERS_ON_PAGE,this.state.currentPage);
+      }
+    })
+    .catch(err => console.log(err));
 	}
 
 	changeShowingUsers(value){
-		showUsersList((value-1)*SHOWN_USERS, SHOWN_USERS).then(users => {
+		getUsersList((value-1)*MAX_USERS_ON_PAGE, MAX_USERS_ON_PAGE).then(users => {
 			this.setState({usersToDisplay: users,currentPage:value});
 		});
 	}
@@ -83,16 +93,18 @@ export default class UsersList extends Component {
 							{return <TableRow key={i}>
 								<TableRowColumn>{user.get('name')}</TableRowColumn>
 								<TableRowColumn>{user.get('email')}</TableRowColumn>
-								<TableRowColumn>{user.get('Town')?user.get('Town').get('name'):''}</TableRowColumn>
+								<TableRowColumn>
+									{user.get('Town')?user.get('Town').get('name'):''}
+								</TableRowColumn>
 								<TableRowColumn>
 									<RaisedButton label="Update" 
-																primary={true} style={style} 
-																onTouchTap={this.updateUser.bind(this, 'update', user)}/>
+                                primary={true} style={style} 
+                                onTouchTap={this.updateUser.bind(this, 'update', user)}/>
 								</TableRowColumn>
 								<TableRowColumn>
 									<RaisedButton label="Delete" 
 																primary={true} style={style} 
-																onTouchTap={this.deleteUser.bind(this,'delete',user)}/>
+																onTouchTap={this.delete.bind(this,'delete',user)}/>
 								</TableRowColumn>
 							</TableRow>}
 						)}
@@ -100,7 +112,7 @@ export default class UsersList extends Component {
 				</Table>
 				<Divider/>
 				<Pagination total={this.state.totalPages} 
-										display={SHOWN_USERS} 
+										display={MAX_USERS_ON_PAGE} 
 										current={this.state.currentPage} 
 										onChange={this.changeShowingUsers.bind(this)}/>
 			</div>

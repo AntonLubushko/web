@@ -2,20 +2,20 @@ import Parse from './parseServerInit';
 let Users = Parse.Object.extend("Users");
 let Towns = Parse.Object.extend("Town");
 
-export function countUsers(){
+export function getUsersAmount(){
   let query = new Parse.Query(Users);
   return query.count();
 }
 
 export function getTowns(){
   let query = new Parse.Query(Towns);
-  // need to fix this
-  query.notEqualTo(" "||undefined);
+  let reg = /^.?$/;
+  query.notEqualTo("name", null);
   return query.find();
     
 }
 
-export function showUsersList(skip, limit){
+export function getUsersList(skip, limit){
   let query = new Parse.Query(Users).include(['Town']);
   query.skip(skip);
   query.limit(limit);
@@ -36,7 +36,11 @@ export function saveUser(name, email, town){
   return users.save();
  }
 
-let validateEmail = (email) => {
-    let regexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regexp.test(email.trim());
+export function deleteUser(user){
+  return user.destroy();
+}
+
+function validateEmail(email) {
+  let regexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regexp.test(email.trim());
   }

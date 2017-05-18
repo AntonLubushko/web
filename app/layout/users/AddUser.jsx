@@ -25,7 +25,7 @@ export default class AddUser extends Component {
     };
   }
   
-  handleChange(event, _ , value) {
+  paginationChange(event, _ , value) {
     this.setState({townIndex: value});
   }
 
@@ -71,7 +71,7 @@ export default class AddUser extends Component {
             onChange={this.changeEmail.bind(this)}/>
           <DropDownMenu 
             value={this.state.townIndex} 
-            onChange={this.handleChange.bind(this)} 
+            onChange={this.paginationChange.bind(this)} 
             style={{height:64,width:200}}>
               {this.state.towns.map((town, i) => 
               <MenuItem key={i} value={i+1} primaryText={town.get("name")}/>)
