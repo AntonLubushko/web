@@ -25,7 +25,7 @@ export default class AddUser extends Component {
     };
   }
   
-  paginationChange(event, _ , value) {
+  townChange(event, _ , value) {
     this.setState({townIndex: value});
   }
 
@@ -38,11 +38,15 @@ export default class AddUser extends Component {
   }
 
   save(){
-     let result = saveUser(this.state.name, this.state.email, this.state.towns[this.state.townIndex-1]);
-     switch(typeof result){
-       case('object'): this.setState({successBar:true, name: '', email: ''});break;
-       case('string'): result === 'name'?this.setState({invalidNameBar:true}):this.setState({invalidEmailBar:true});break;
-     }
+
+    saveUser(this.state.name, this.state.email, this.state.towns[this.state.townIndex-1])
+    .then((user)=>{
+      this.setState({successBar:true, name: '', email: ''})
+    })
+    .catch(error=>{
+       error === 'name'?this.setState({invalidNameBar:true}):this.setState({invalidEmailBar:true});
+    })
+    
   }
 
   componentDidMount(){
@@ -71,7 +75,7 @@ export default class AddUser extends Component {
             onChange={this.changeEmail.bind(this)}/>
           <DropDownMenu 
             value={this.state.townIndex} 
-            onChange={this.paginationChange.bind(this)} 
+            onChange={this.townChange.bind(this)} 
             style={{height:64,width:200}}>
               {this.state.towns.map((town, i) => 
               <MenuItem key={i} value={i+1} primaryText={town.get("name")}/>)

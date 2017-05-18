@@ -17,7 +17,7 @@ import Divider from 'material-ui/Divider';
 const style = {
   margin: 2,
 };
-
+import Snackbar from 'material-ui/Snackbar';
 import {getUsersList, getUsersAmount, deleteUser} from '../../utils/actions';
 
 
@@ -31,7 +31,8 @@ export default class UsersList extends Component {
 		this.state = {
 			usersToDisplay:[],
 			totalPages:1,
-			currentPage:1
+			currentPage:1,
+      userDeletedBar: false
 		}
 	}
 	fetchData(skip, currentPage){
@@ -59,6 +60,7 @@ export default class UsersList extends Component {
       } else {
         this.fetchData((this.state.currentPage - 1)*MAX_USERS_ON_PAGE,this.state.currentPage);
       }
+      this.setState({userDeletedBar: true});
     })
     .catch(err => console.log(err));
 	}
@@ -71,7 +73,7 @@ export default class UsersList extends Component {
 	render() {
 		return (
 			<div style={{minWidth:1000}}>
-				<Link to={'/users/add'}>
+				<Link to={'/users/add'} >
 					<RaisedButton label="Add new user" 
 												primary={true} 
 												style={style}/>
@@ -115,6 +117,11 @@ export default class UsersList extends Component {
 										display={MAX_USERS_ON_PAGE} 
 										current={this.state.currentPage} 
 										onChange={this.changeShowingUsers.bind(this)}/>
-			</div>
+        <Snackbar
+            open={this.state.userDeletedBar}
+            message="User wad deleted successfully"
+            autoHideDuration={2500}
+            onRequestClose={() => this.setState({userDeletedBar: false})}/>
+      </div>
 	);}
 };

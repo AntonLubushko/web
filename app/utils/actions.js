@@ -17,6 +17,7 @@ export function getTowns(){
 
 export function getUsersList(skip, limit){
   let query = new Parse.Query(Users).include(['Town']);
+  let subscription = query.subscribe();
   query.skip(skip);
   query.limit(limit);
   return query.find();  
@@ -24,10 +25,10 @@ export function getUsersList(skip, limit){
 
 export function saveUser(name, email, town){
   if(!name){
-    return 'name';
+    return  Promise.reject('name');
   }
   if(!validateEmail(email)) {
-    return 'email';
+    return  Promise.reject('email');
   }
   let users = new Users();
   users.set("name",name);
